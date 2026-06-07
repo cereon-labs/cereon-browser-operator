@@ -1,0 +1,6 @@
+# pnpm workspace. The repo root is the Chrome extension package; the bundled
+# MCP server and reference examples are sibling workspace packages so one
+# `pnpm install` at the root wires up everything with a single lockfile.
+packages:
+  - "mcp-server"
+  - "examples"

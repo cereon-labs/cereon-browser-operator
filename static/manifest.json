@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Browser Operator",
+  "version": "2.1.0",
+  "description": "Open-source, self-hosted browser-automation agent any backend can drive. A model-agnostic alternative to Claude for Chrome.",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "tabs",
+    "debugger",
+    "activeTab",
+    "scripting",
+    "tabGroups",
+    "windows",
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

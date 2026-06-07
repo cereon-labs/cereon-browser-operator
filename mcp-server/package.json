@@ -1,0 +1,49 @@
+{
+  "name": "cereon-browser-operator-mcp",
+  "version": "0.2.0",
+  "description": "MCP server that bridges any MCP client (Claude Desktop, Cursor, Cline, Claude Code) to the Browser Operator Chrome extension over WebSocket + token auth.",
+  "type": "module",
+  "bin": {
+    "cereon-browser-operator-mcp": "server.mjs"
+  },
+  "files": [
+    "server.mjs",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "author": "Cereon Labs",
+  "homepage": "https://github.com/cereon-labs/cereon-browser-operator/tree/main/mcp-server#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cereon-labs/cereon-browser-operator.git",
+    "directory": "mcp-server"
+  },
+  "bugs": {
+    "url": "https://github.com/cereon-labs/cereon-browser-operator/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "browser-automation",
+    "chrome-extension",
+    "cdp",
+    "ai-agent",
+    "claude",
+    "browser-operator",
+    "self-hosted"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "ws": "^8.21.0",
+    "zod": "^4.4.3"
+  }
+}

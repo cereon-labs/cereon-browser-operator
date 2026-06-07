@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+*.zip
+.env
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# Personal local notes
+MY-TODO.md

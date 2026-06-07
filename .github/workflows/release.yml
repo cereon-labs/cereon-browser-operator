@@ -1,0 +1,55 @@
+name: Release
+
+# Triggered by pushing a version tag, e.g. `git tag v2.1.0 && git push --tags`.
+# Builds the extension, attaches a load-unpacked-ready zip to a GitHub Release,
+# and (only if an NPM_TOKEN secret is configured) publishes the MCP server.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build extension
+        run: pnpm run build
+
+      - name: Verify build output
+        run: node scripts/verify-dist.mjs
+
+      - name: Package unpacked extension
+        run: cd dist && zip -r "../browser-operator-${{ github.ref_name }}.zip" . && cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: browser-operator-${{ github.ref_name }}.zip
+
+      - name: Publish MCP server to npm
+        if: ${{ env.NPM_TOKEN != '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --filter cereon-browser-operator-mcp publish --no-git-checks --access public

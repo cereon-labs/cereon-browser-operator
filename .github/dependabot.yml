@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # Extension (workspace root)
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  # Bundled MCP server (published to npm)
+  - package-ecosystem: npm
+    directory: "/mcp-server"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # Reference backend + CLI
+  - package-ecosystem: npm
+    directory: "/examples"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # GitHub Actions used in the workflows above
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly

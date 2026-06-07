@@ -1,0 +1,72 @@
+name: 🐛 Bug report
+description: Something in the extension, protocol, or MCP server isn't working.
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug! Please fill in as much as you can — a clear repro
+        is the fastest path to a fix.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+      placeholder: |
+        1. Built and loaded the extension
+        2. Configured WebSocket transport, connected
+        3. Called `navigate` … and got …
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the project?
+      options:
+        - Extension (background / CDP engine)
+        - Content script (a11y tree / find / forms)
+        - Popup / options UI
+        - Protocol / transport (SSE+HTTP or WebSocket)
+        - MCP server (mcp-server/)
+        - Reference backend / examples
+        - Build / tooling / CI
+        - Docs
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & version
+      placeholder: "Chrome 140 / Brave 1.7 / Edge 140 …"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: "macOS 15 / Windows 11 / Ubuntu 24.04"
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: "node --version (>= 22 required)"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / errors
+      description: Service-worker console, `read_console_messages` output, or backend logs. Redact any tokens.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I'm on the latest `main` (or a tagged release) and rebuilt `dist/`.
+          required: true
+        - label: I searched existing issues and this isn't a duplicate.
+          required: true
+        - label: This is not a security vulnerability (report those privately via the repo's Security tab → "Report a vulnerability").
+          required: true

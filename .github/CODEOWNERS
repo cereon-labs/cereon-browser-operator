@@ -1,0 +1,8 @@
+# Default reviewers for every change. Replace the team/handle below with the
+# real maintainer team or your GitHub username so reviews auto-request correctly.
+# https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @cereon-labs/maintainers
+
+# Protocol changes deserve extra scrutiny — they're the public contract.
+/PROTOCOL.md @cereon-labs/maintainers

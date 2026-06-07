@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browser Operator — Settings</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #f9fafb;
+        --border: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-text: #fff;
+        --green: #22c55e;
+        --red: #ef4444;
+        --radius: 8px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --surface: #1e293b;
+          --border: #334155;
+          --text: #f1f5f9;
+          --muted: #94a3b8;
+          --primary: #6366f1;
+          --primary-hover: #818cf8;
+        }
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 14px;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+        padding: 32px 16px;
+      }
+      .wrap {
+        max-width: 640px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 24px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .field {
+        margin-bottom: 16px;
+      }
+      .field:last-child {
+        margin-bottom: 0;
+      }
+      label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 6px;
+        font-size: 13px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 13px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+      }
+      .row > .field {
+        flex: 1;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 8px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 9px 16px;
+        border-radius: var(--radius);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: var(--primary-text);
+      }
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+      .btn-outline {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .btn-outline:hover {
+        background: var(--bg);
+      }
+      .msg {
+        font-size: 13px;
+        margin-left: auto;
+      }
+      .msg.ok {
+        color: var(--green);
+      }
+      .msg.err {
+        color: var(--red);
+        white-space: pre-line;
+        text-align: right;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1 id="title">Browser Operator</h1>
+      <p class="sub">Connect the extension to your backend. See PROTOCOL.md to implement one.</p>
+
+      <form id="form">
+        <div class="card">
+          <div class="field">
+            <label for="transport">Transport</label>
+            <select id="transport">
+              <option value="sse-http">SSE + HTTP (remote)</option>
+              <option value="websocket">WebSocket (local)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="serverUrl">Server URL</label>
+            <input
+              id="serverUrl"
+              type="text"
+              placeholder="https://your-server.example or ws://localhost:8787"
+            />
+            <div class="hint" id="serverHint">
+              Base origin for SSE/HTTP, or full ws(s):// URL for WebSocket.
+            </div>
+          </div>
+          <div class="field" id="targetField">
+            <label for="target">Target (optional)</label>
+            <input
+              id="target"
+              type="text"
+              placeholder="opaque channel id, substituted for {target}"
+            />
+          </div>
+        </div>
+
+        <div class="card" id="sseCard">
+          <div class="field">
+            <label for="commandPath">Command path</label>
+            <input id="commandPath" type="text" placeholder="/browser/events" />
+          </div>
+          <div class="field">
+            <label for="resultPath">Result path</label>
+            <input id="resultPath" type="text" placeholder="/browser/result" />
+          </div>
+        </div>
+
+        <div class="card" id="tokenCard">
+          <div class="field">
+            <label for="token">Token</label>
+            <input
+              id="token"
+              type="password"
+              placeholder="paste the bearer token from your backend"
+            />
+            <div class="hint">
+              Stored in extension sync storage; sent as <code>Authorization: Bearer …</code>.
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+          <button type="button" class="btn btn-outline" id="resetBtn">Reset</button>
+          <span class="msg" id="msg"></span>
+        </div>
+      </form>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

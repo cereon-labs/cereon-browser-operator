@@ -1,0 +1,17 @@
+{
+  "name": "browser-operator-examples",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reference backend + CLI driver implementing the Browser Operator protocol.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "server": "node reference-server.mjs",
+    "send": "node cli-driver.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.21.0"
+  }
+}

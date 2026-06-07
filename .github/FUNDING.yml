@@ -1,0 +1,8 @@
+# Enable a "Sponsor" button on the repo. Uncomment and fill in the channels you
+# actually use — leaving a handle for a program you're not enrolled in just hides
+# the button. https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# github: [cereon-labs]
+# open_collective: cereon-browser-operator
+# ko_fi: your-handle
+# custom: ["https://cereon.dev/sponsor"]
