@@ -10,17 +10,17 @@
  */
 export const brand = {
   /** Full product name shown in the popup header and options page title. */
-  productName: "Browser Operator",
+  productName: "Cereon Browser Operator",
   /** Short name used in compact UI. */
-  shortName: "Operator",
+  shortName: "Cereon",
   /** Title given to the automation tab group (the security boundary). */
-  tabGroupTitle: "Operator",
+  tabGroupTitle: "Cereon",
   /** Color of the automation tab group. */
-  tabGroupColor: "blue" as `${chrome.tabGroups.Color}`,
+  tabGroupColor: "purple" as `${chrome.tabGroups.Color}`,
   /** Project / docs home link shown in the popup footer. */
   homeUrl: "https://github.com/cereon-labs/cereon-browser-operator",
   /** Footer label next to the home link. */
-  homeLabel: "Browser Operator",
+  homeLabel: "Cereon Browser Operator",
   /** UI copy. */
   copy: {
     connectButton: "Connect",

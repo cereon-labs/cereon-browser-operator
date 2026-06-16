@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Browser Operator",
+  "name": "Cereon Browser Operator",
   "version": "2.1.0",
   "description": "Open-source, self-hosted browser-automation agent any backend can drive. A model-agnostic alternative to Claude for Chrome.",
   "minimum_chrome_version": "116",

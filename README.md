@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="static/icons/icon128.png" width="80" alt="Browser Operator — open-source browser automation agent logo">
+  <img src="static/icons/icon128.png" width="80" alt="Cereon Browser Operator — open-source browser automation agent logo">
 </p>
 
-<h1 align="center">Browser Operator</h1>
+<h1 align="center">Cereon Browser Operator</h1>
 
 <p align="center">
   <b>The open-source, self-hosted alternative to Claude for Chrome.</b>
