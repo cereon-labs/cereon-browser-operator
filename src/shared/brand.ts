@@ -16,7 +16,7 @@ export const brand = {
   /** Title given to the automation tab group (the security boundary). */
   tabGroupTitle: "Cereon",
   /** Color of the automation tab group. */
-  tabGroupColor: "purple" as `${chrome.tabGroups.Color}`,
+  tabGroupColor: "cyan" as `${chrome.tabGroups.Color}`,
   /** Project / docs home link shown in the popup footer. */
   homeUrl: "https://github.com/cereon-labs/cereon-browser-operator",
   /** Footer label next to the home link. */
