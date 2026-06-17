@@ -5,11 +5,12 @@
 <h1 align="center">Cereon Browser Operator</h1>
 
 <p align="center">
-  <b>The open-source, self-hosted alternative to Claude for Chrome.</b>
+  <b>An open, self-hosted browser-control layer for AI agents.</b>
   <br/>
-  A model-agnostic browser-automation agent any backend — and any LLM — can drive.
-  Navigate, click, type, screenshot, read pages, fill forms, run JavaScript, and
-  inspect console/network over one open protocol. MIT licensed. Bring your own model.
+  A Manifest V3 extension that drives your <b>real, logged-in</b> browser over CDP,
+  exposed as one open protocol any backend — and any LLM — can drive. Navigate, click,
+  type, screenshot, read pages, fill forms, run JavaScript, and inspect console/network.
+  MIT licensed. Bring your own model.
   <br/>
   <sub>by <a href="https://github.com/cereon-labs">Cereon Labs</a></sub>
 </p>
@@ -25,7 +26,7 @@
 
 <p align="center">
   <a href="#use-it-from-any-mcp-client">Use with MCP</a> ·
-  <a href="#browser-operator-vs-claude-for-chrome">Vs Claude for Chrome</a> ·
+  <a href="#how-it-compares">How it compares</a> ·
   <a href="#what-you-can-build">Use cases</a> ·
   <a href="PROTOCOL.md">Protocol</a> ·
   <a href="#faq">FAQ</a>
@@ -53,7 +54,7 @@ automation that you own end to end.**
 - **MCP-native** — the bundled [`mcp-server/`](mcp-server/) exposes every tool to any MCP client; add one line to your config.
 - **Pluggable transport** — SSE+HTTP (remote) or WebSocket (local), chosen in settings.
 - **Token auth** — paste a token your backend (or the MCP server) issues. No accounts, no consent flow.
-- **18 tools** — tabs, navigate, the multi-action `computer` (13 actions), accessibility tree, find, form input, JavaScript, console/network capture, and more ([catalog](PROTOCOL.md#tool-catalog)).
+- **14 tools** (plus 4 reserved) — tabs, navigate, the multi-action `computer` (13 actions), accessibility tree, find, form input, JavaScript, console/network capture, and more ([catalog](PROTOCOL.md#tool-catalog)).
 - **Configured at runtime** — one build, point it anywhere; nothing about a backend is compiled in.
 - **Safe by design** — the extension only acts inside a dedicated **automation tab group**; your normal tabs are off-limits.
 
@@ -104,30 +105,30 @@ client: _"open example.com and screenshot it."_ Full setup: **[mcp-server/](mcp-
 
 ---
 
-## Browser Operator vs Claude for Chrome
+## How it compares
 
-[Claude for Chrome](https://claude.com/claude-for-chrome) is a finished product: one
-vendor's model, running in their cloud, on a paid plan. Browser Operator is the **open
-foundation** — the same browser-control capability exposed as a protocol you drive
-from **any model and any backend**, so you own the whole agent.
+The tools Browser Operator actually competes with are **[Playwright MCP](https://github.com/microsoft/playwright-mcp)**
+(Microsoft) and **[Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp)**
+(Google) — both are mature, well-resourced ways to drive a browser from an agent. **For
+most "let an agent drive a browser" jobs, reach for one of those first.** Browser
+Operator is the better fit in a narrower band:
 
-|                           | **Browser Operator**                                                                         | **Claude for Chrome**                                                           |
-| ------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| **License**               | MIT, fully open source                                                                       | Proprietary, closed                                                             |
-| **Price**                 | Free — self-host                                                                             | Paid plan only (~$20 Pro → $100–$200/mo Max) <sup>[1]</sup>                     |
-| **The "brain" (model)**   | **Any** — bring your own LLM (Claude, GPT, Gemini, local Ollama/LM Studio), or no LLM at all | Anthropic only; Pro capped at Haiku 4.5, Sonnet/Opus require Max <sup>[1]</sup> |
-| **Where it runs**         | Your machine / your infrastructure                                                           | Anthropic's cloud                                                               |
-| **Your data**             | Stays in your stack — **you** decide what leaves                                             | Screenshots your active tab to the cloud <sup>[2]</sup>                         |
-| **Backend / integration** | Any backend, any language, over an open protocol (Claude Code, MCP, Python/Node, your SaaS)  | Single first-party app                                                          |
-| **Browser support**       | Any Chromium — Chrome, Edge, Brave, Arc, …                                                   | Chrome only <sup>[1]</sup>                                                      |
-| **Maturity**              | Stable, documented protocol you control                                                      | Beta <sup>[1]</sup>                                                             |
-| **Safety boundary**       | Acts **only** inside a dedicated automation tab group                                        | Reads/acts across your active browsing <sup>[2]</sup>                           |
-| **Extensible**            | Add tools, transports, auth; fork & white-label                                              | No                                                                              |
+|                           | **Browser Operator**                                     | **Playwright MCP** / **Chrome DevTools MCP**                |
+| ------------------------- | -------------------------------------------------------- | ----------------------------------------------------------- |
+| **What it is**            | MV3 extension + open protocol                            | MCP server driving a managed/attached browser               |
+| **Acts in your browser**  | **Yes, by default** — your real, open, logged-in session | Possible via a flag (persistent profile / connect-over-CDP) |
+| **Embed & white-label**   | **Yes** — re-skin in one file, ship in your product      | Not a goal — consumed as a third-party MCP server           |
+| **Driven over**           | An open protocol you point at your own backend           | MCP                                                         |
+| **Maturity**              | New (2026), small surface                                | **Mature / official, broad ecosystem**                      |
+| **Cross-browser / depth** | Any Chromium; tab-group safety boundary                  | Playwright: cross-browser · CDP MCP: perf traces, network   |
 
-<sub>[1] <a href="https://aitoolanalysis.com/claude-in-chrome-review/">Claude in Chrome review (2026)</a>, <a href="https://almcorp.com/blog/claude-for-chrome-complete-guide/">ALM Corp guide</a>. [2] <a href="https://venturebeat.com/ai/anthropic-launches-claude-for-chrome-in-limited-beta-but-prompt-injection-attacks-remain-a-major-concern">VentureBeat: Claude for Chrome beta & prompt-injection</a>, <a href="https://support.claude.com/en/articles/12902428-using-claude-in-chrome-safely">Anthropic safety docs</a>. Vendor details change — verify before quoting.</sub>
+So pick Browser Operator when you specifically want an **extension that acts in the
+user's real, logged-in browser**, **embedded and branded inside your own product**, over
+a protocol you control. Otherwise Playwright MCP / Chrome DevTools MCP are the pragmatic
+default.
 
-Comparing the open landscape too (Nanobrowser, Browser Use, BrowserOS)? See the full
-breakdown in **[docs/comparison.md](docs/comparison.md)**.
+Full breakdown — including the bundled agent _products_ (Claude for Chrome, Nanobrowser,
+Browser Use, BrowserOS) — in **[docs/comparison.md](docs/comparison.md)**.
 
 ---
 
@@ -254,19 +255,23 @@ Then **Connect** from the popup. Implement the matching backend per
 ## Branding / forking
 
 Re-skin in one file (`src/shared/brand.ts`) plus the manifest name and icons —
-ship your own branded, Claude-for-Chrome-style operator inside your product. See
+ship your own branded browser operator inside your product. See
 [BRANDING.md](BRANDING.md).
 
 ---
 
 ## FAQ
 
-### Is this a Claude for Chrome alternative?
+### How is this different from Playwright MCP / Chrome DevTools MCP?
 
-Yes — an **open-source, self-hosted one**. Claude for Chrome bundles one vendor's
-model running in their cloud on a paid plan. Browser Operator gives you the same
-browser-control capability as a protocol you drive from **any** model and backend,
-so you own the agent end to end. See the [comparison](#browser-operator-vs-claude-for-chrome).
+Those are mature, well-resourced MCP servers that drive a browser for an agent — for
+most jobs they're the pragmatic default. Browser Operator's difference is that it's a
+**Manifest V3 extension acting in the user's own, already-logged-in browser** by default,
+driven over **an open protocol you can embed and white-label inside your own product**
+(the bundled MCP server is just one backend). It's also an **open, self-hosted
+alternative to closed first-party agents** like Claude for Chrome — you own the model,
+the data path, and the brand. See the [comparison](#how-it-compares) for when to pick
+which.
 
 ### Is it free? Do I need an API key?
 
@@ -325,6 +330,7 @@ welcome (each is a self-contained contribution; see [CONTRIBUTING.md](CONTRIBUTI
 - **Implement the reserved tools** — `gif_creator` (in-browser recording), `shortcuts_list` / `shortcuts_execute`, `switch_browser` (currently honest stubs; see [PROTOCOL.md](PROTOCOL.md)).
 - **More reference backends** in other languages (Python first) to sit alongside the Node example.
 - **Broader example agent loops** — additional model providers wired in [docs/use-cases.md](docs/use-cases.md).
+- **An end-to-end smoke test** that loads the unpacked extension into a headed Chrome in CI and drives a real navigate + screenshot — today's suite unit-tests the pure logic (parsers, transports, config); the CDP engine itself isn't yet exercised against a live browser.
 - **Wider browser/CI coverage** — exercise the matrix against more Chromium builds.
 
 Have an idea that isn't here?

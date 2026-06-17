@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Cereon Browser Operator",
   "version": "2.1.0",
-  "description": "Open-source, self-hosted browser-automation agent any backend can drive. A model-agnostic alternative to Claude for Chrome.",
+  "description": "Open, self-hosted browser-control layer for AI agents: an MV3 extension that drives your real, logged-in browser over CDP.",
   "minimum_chrome_version": "116",
   "permissions": [
     "tabs",

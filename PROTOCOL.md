@@ -1,12 +1,13 @@
 # Browser Operator Protocol
 
-The open standard for driving a browser from **any** AI backend or LLM —
-vendor-neutral, model-agnostic, and self-hostable.
+A documented, vendor-neutral protocol for driving a browser from **any** AI backend or
+LLM — model-agnostic and self-hostable.
 
 This document is the contract between the extension and **any** backend. If your
 software can deliver commands and accept results per this spec, the extension can
-drive the browser for it. There is nothing vendor-specific here — this is what makes
-Browser Operator an [open alternative to closed agents like Claude for Chrome](docs/comparison.md).
+drive the browser for it. There is nothing vendor-specific here — this is what lets you
+embed and white-label Browser Operator inside your own product, driven over a protocol
+you control ([how it compares](docs/comparison.md)).
 
 A reference implementation lives in [`examples/`](examples/).
 

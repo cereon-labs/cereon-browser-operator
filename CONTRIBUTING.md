@@ -1,10 +1,11 @@
 # Contributing
 
-Thanks for your interest! This is a vendor-neutral browser-automation agent — the
-core is a stable [protocol](PROTOCOL.md) and a CDP engine; backends are pluggable.
-We're building the **open-source, self-hosted alternative to closed browser agents**
-like Claude for Chrome, and contributions of every size are welcome — new tools,
-transports, auth modes, docs, examples, and bug reports.
+Thanks for your interest! This is a vendor-neutral browser-**control layer** — the
+core is a documented [protocol](PROTOCOL.md) and a CDP engine; backends are pluggable.
+We're building an **open, self-hosted browser-control layer for AI agents** — a Manifest
+V3 extension that drives the user's real browser, embeddable in your own product — and
+contributions of every size are welcome: new tools, transports, auth modes, docs,
+examples, and bug reports.
 
 **Good first contributions:** add a tool, a `computer` action, a transport, or an
 auth mode using the existing extension points (see [Extending](#extending) below) —

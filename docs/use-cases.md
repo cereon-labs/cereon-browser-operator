@@ -2,7 +2,7 @@
 
 Browser Operator is the **browser-control layer**. These recipes show what you can
 build on top of it — including how to **wire any LLM into an agent loop** so you get a
-Claude-for-Chrome-style experience on a model and stack you own.
+full browser-agent experience on a model and stack you own.
 
 > **Just want it working in an MCP client?** Use the bundled
 > **[MCP server](../mcp-server/)** — no code. These recipes are for when you want to
@@ -23,7 +23,7 @@ Tool names and arguments are the protocol surface in [PROTOCOL.md](../PROTOCOL.m
 
 ## Recipe 1 — Wire any LLM into a browser agent (~30 lines)
 
-This is the honest "build your own Claude for Chrome" recipe. The **model is the
+This is the honest build-your-own-browser-agent recipe. The **model is the
 brain**; Browser Operator is the **hands**. The loop: show the model the page, let it
 pick a tool, run it, feed the result back, repeat. Swap the model by swapping the
 `callModel` function — nothing else changes.
@@ -135,5 +135,5 @@ isolation — the extension only needs the resulting token.
 ---
 
 See the [protocol](../PROTOCOL.md) for the full tool catalog and message shapes, and
-[comparison.md](comparison.md) for how this approach differs from bundled agents like
-Claude for Chrome.
+[comparison.md](comparison.md) for how this approach differs from MCP servers like
+Playwright MCP and Chrome DevTools MCP, and from bundled agents like Claude for Chrome.

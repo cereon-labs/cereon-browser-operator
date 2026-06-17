@@ -62,7 +62,7 @@ If you just want to drive the browser from an MCP client (Claude Desktop, Cursor
 Cline, Claude Code), skip this reference server and use the bundled
 [MCP server](../mcp-server/) instead — no scripting required.
 
-## Drive it with an LLM (build your own Claude for Chrome)
+## Drive it with an LLM (build your own browser agent)
 
 To turn this into an AI browser agent, put a model in the loop: show it the page
 (`read_page` / `get_page_text`), let it pick a tool, `POST /commands`, feed the

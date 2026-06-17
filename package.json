@@ -2,7 +2,7 @@
   "name": "cereon-browser-operator",
   "version": "2.1.0",
   "private": true,
-  "description": "Open-source, self-hosted, MCP-native browser-automation agent any backend can drive — a model-agnostic alternative to Claude for Chrome. Manifest V3, TypeScript.",
+  "description": "Open, self-hosted browser-control layer for AI agents: a Manifest V3 extension that drives your real, logged-in browser over CDP, exposed as one open protocol any backend or LLM can drive. MCP-native, model-agnostic, embeddable. TypeScript.",
   "author": "Cereon Labs",
   "license": "MIT",
   "type": "module",
