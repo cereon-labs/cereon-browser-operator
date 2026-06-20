@@ -1,6 +1,11 @@
 version: 2
 updates:
-  # Extension (workspace root)
+  # Single npm entry for the whole pnpm workspace.
+  # The repo root holds the ONLY lockfile (pnpm-lock.yaml); Dependabot reads
+  # pnpm-workspace.yaml and updates dependencies across ALL member packages
+  # (root extension + mcp-server + examples) from this one config.
+  # Do NOT add separate entries for /mcp-server or /examples — those member
+  # directories have a package.json but no lockfile, so their jobs fail.
   - package-ecosystem: npm
     directory: "/"
     schedule:
@@ -10,20 +15,6 @@ updates:
       dev-minor-patch:
         patterns: ["*"]
         update-types: ["minor", "patch"]
-
-  # Bundled MCP server (published to npm)
-  - package-ecosystem: npm
-    directory: "/mcp-server"
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-
-  # Reference backend + CLI
-  - package-ecosystem: npm
-    directory: "/examples"
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
 
   # GitHub Actions used in the workflows above
   - package-ecosystem: github-actions
