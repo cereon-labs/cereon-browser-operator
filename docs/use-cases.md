@@ -132,6 +132,16 @@ contract; implement the same shapes in Go, Python, Rust, or your own product. Is
 per-user tokens and scope each connection with a `target` if you need multi-tenant
 isolation — the extension only needs the resulting token.
 
+## Recipe 6 — Embed it in your product with one-click pairing
+
+Take Recipe 5 further: instead of the user typing a URL and token, your web app
+hands the connection to the extension with **one click** via the vendor-neutral
+[pairing handoff](../PROTOCOL.md#one-click-pairing-optional) (`pair-offer` +
+`ping`/`pong`). This is how a product like **Cereon CRM** lets each user connect
+their own browser from a settings page and drive it through the product's own MCP
+server. Full walkthrough for both end users and integrators:
+**[docs/usage.md](usage.md)**.
+
 ---
 
 See the [protocol](../PROTOCOL.md) for the full tool catalog and message shapes, and

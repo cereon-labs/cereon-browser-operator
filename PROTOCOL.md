@@ -105,6 +105,10 @@ token.
 
 ## One-click pairing (optional)
 
+> For the end-to-end usage story (end users connecting from a product, and
+> developers embedding this in their own platform), see **[docs/usage.md](docs/usage.md)**.
+> This section is the wire contract those flows are built on.
+
 Instead of the user hand-typing the server URL + token in **Configure…**, a
 backend's own web page can hand the connection config to the extension and detect
 that it is installed — all over `window.postMessage`, with **no backend origin,

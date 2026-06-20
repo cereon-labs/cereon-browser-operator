@@ -70,6 +70,22 @@ Your backend ◄──results───  Browser Operator
 
 ---
 
+## How to use it
+
+Browser Operator is the **hands** — something has to connect to it. Two audiences,
+one short guide → **[docs/usage.md](docs/usage.md)**:
+
+- **You use a product that supports it** (e.g. **Cereon CRM**) — install the
+  extension, click **Connect** in the product, approve in the popup. No tokens, no
+  config. → [End-user guide](docs/usage.md#for-end-users)
+- **You're a developer** — drive it yourself or embed it in your product:
+  **(A)** add the bundled [MCP server](mcp-server/) and pair in one click;
+  **(B)** [embed it in your platform](docs/usage.md#b-embed-it-in-your-product-a-vendor-platform)
+  with one-click pairing (how Cereon CRM does it); or **(C)** script your own
+  backend. → [Developer guide](docs/usage.md#for-developers)
+
+The ready-made backends below get you driving the browser the fastest.
+
 ## Use it from any MCP client
 
 The fastest path — no custom backend. The bundled **[MCP server](mcp-server/)** lets
@@ -319,6 +335,15 @@ your own agent; see [docs/comparison.md](docs/comparison.md).
 No. Use the bundled [MCP server](mcp-server/) for any MCP client, the
 [reference server](examples/) for scripting, or implement the [protocol](PROTOCOL.md)
 in your own software. Nothing about any one backend is compiled in.
+
+### Can I use it inside another product (like Cereon CRM)?
+
+Yes — that's a first-class path. A product can connect your browser with **one
+click** (no token to paste) and drive it from its own backend, using the
+vendor-neutral [pairing handoff](PROTOCOL.md#one-click-pairing-optional). **Cereon
+CRM** is the reference example — _Settings → MCP → Browser Operator → Connect_. If
+you're building such a product, see
+[docs/usage.md → For developers](docs/usage.md#for-developers).
 
 ---
 
