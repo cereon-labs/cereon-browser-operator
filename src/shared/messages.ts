@@ -96,9 +96,35 @@ export interface ContentResponse<T = unknown> {
   result: T;
 }
 
+// ─── Pairing protocol (page → content → background) ──────────────────────────
+
+import type { PairOffer, PairOfferConfig } from "./pairing";
+
+/** Relayed by the content script when a page posts a valid pair-offer. */
+export interface PairOfferInbound {
+  type: "pairOffer";
+  origin: string;
+  config: PairOfferConfig;
+  brand?: { name?: string };
+}
+
+/** Reply to a popup `getPairOffer` request. */
+export interface PairOfferResponse {
+  offer: PairOffer | null;
+}
+
 // ─── Popup ↔ background protocol ─────────────────────────────────────────────
 
-export type PopupRequest = { type: "connect" } | { type: "getStatus" } | { type: "disconnect" };
+export type PopupRequest =
+  | { type: "connect" }
+  | { type: "getStatus" }
+  | { type: "disconnect" }
+  | { type: "getPairOffer" }
+  | { type: "acceptPairOffer" }
+  | { type: "dismissPairOffer" };
+
+/** Everything the service worker's onMessage listener may receive. */
+export type WorkerInbound = PopupRequest | PairOfferInbound;
 
 export interface StatusUpdate {
   type: "statusUpdate";

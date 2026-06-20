@@ -47,9 +47,12 @@ a local WebSocket endpoint the extension connects to with a shared token.
    }
    ```
 
-3. **Configure the extension** (popup → Configure…): transport **WebSocket**, auth
-   **Token**, server URL `ws://localhost:8787`, token `dev-token`. **Save**, then
-   **Connect** from the popup.
+3. **Connect the extension.** Two ways:
+   - **One-click (recommended):** open **`http://localhost:8787/pair`**. The page
+     hands this server's token to the extension; click the extension's toolbar
+     icon and press **Connect** to approve. No copy/paste.
+   - **Manual:** popup → Configure… → transport **WebSocket**, auth **Token**,
+     server URL `ws://localhost:8787`, token `dev-token`. **Save**, then **Connect**.
 
 Now ask your AI client to use the browser — e.g. _"open example.com and screenshot
 it."_ It calls `tabs_context_mcp` → `navigate` → `computer` under the hood.

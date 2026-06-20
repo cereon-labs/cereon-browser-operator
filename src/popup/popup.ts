@@ -7,7 +7,14 @@
  */
 
 import { brand } from "../shared/brand";
-import type { ConnectAck, PopupRequest, StatusResponse, StatusUpdate } from "../shared/messages";
+import type {
+  ConnectAck,
+  PairOfferResponse,
+  PopupRequest,
+  StatusResponse,
+  StatusUpdate,
+} from "../shared/messages";
+import type { PairOffer } from "../shared/pairing";
 
 class PopupView {
   private readonly title = this.byId("headerTitle");
@@ -15,10 +22,17 @@ class PopupView {
   private readonly label = this.byId("statusLabel");
   private readonly workspace = this.byId("workspaceName");
   private readonly error = this.byId("errorMsg");
+  private readonly statusCard = this.byId("statusCard");
   private readonly connectBtn = this.byId<HTMLButtonElement>("connectBtn");
   private readonly disconnectBtn = this.byId<HTMLButtonElement>("disconnectBtn");
   private readonly configureLink = this.byId<HTMLAnchorElement>("configureLink");
   private readonly homeLink = this.byId<HTMLAnchorElement>("homeLink");
+  private readonly pairCard = this.byId("pairCard");
+  private readonly pairTitle = this.byId("pairTitle");
+  private readonly pairSub = this.byId("pairSub");
+  private readonly pairOrigin = this.byId("pairOrigin");
+  private readonly pairAcceptBtn = this.byId<HTMLButtonElement>("pairAcceptBtn");
+  private readonly pairDismissBtn = this.byId<HTMLButtonElement>("pairDismissBtn");
 
   constructor() {
     this.title.textContent = brand.productName;
@@ -27,6 +41,9 @@ class PopupView {
     this.configureLink.textContent = brand.copy.configureLink;
     this.homeLink.textContent = brand.homeLabel;
     this.homeLink.href = brand.homeUrl;
+    this.pairTitle.textContent = brand.copy.pairTitle;
+    this.pairAcceptBtn.textContent = brand.copy.pairAccept;
+    this.pairDismissBtn.textContent = brand.copy.pairDismiss;
   }
 
   onConnect(handler: () => void): void {
@@ -42,6 +59,42 @@ class PopupView {
       e.preventDefault();
       handler();
     });
+  }
+
+  onPairAccept(handler: () => void): void {
+    this.pairAcceptBtn.addEventListener("click", handler);
+  }
+
+  onPairDismiss(handler: () => void): void {
+    this.pairDismissBtn.addEventListener("click", handler);
+  }
+
+  /** Show the pending pairing offer; hides the normal status/connect controls. */
+  renderPairOffer(offer: PairOffer): void {
+    const who = offer.brand?.name?.trim() || "A website";
+    this.pairSub.textContent = `${who} ${brand.copy.pairBody}.`;
+    this.pairOrigin.textContent = offer.origin;
+    this.statusCard.style.display = "none";
+    this.connectBtn.style.display = "none";
+    this.disconnectBtn.style.display = "none";
+    this.pairCard.style.display = "block";
+    this.pairAcceptBtn.disabled = false;
+    this.pairAcceptBtn.textContent = brand.copy.pairAccept;
+    this.pairAcceptBtn.style.display = "block";
+    this.pairDismissBtn.style.display = "block";
+  }
+
+  /** Leave the pairing view and return to the normal status view. */
+  clearPairOffer(): void {
+    this.pairCard.style.display = "none";
+    this.pairAcceptBtn.style.display = "none";
+    this.pairDismissBtn.style.display = "none";
+    this.statusCard.style.display = "block";
+  }
+
+  setPairAccepting(): void {
+    this.pairAcceptBtn.disabled = true;
+    this.pairAcceptBtn.innerHTML = `<span class="spinner"></span>${brand.copy.connecting}`;
   }
 
   renderConnected(label?: string): void {
@@ -92,8 +145,21 @@ class PopupController {
     this.view.onConnect(() => this.connect());
     this.view.onDisconnect(() => this.disconnect());
     this.view.onConfigure(() => chrome.runtime.openOptionsPage());
+    this.view.onPairAccept(() => this.acceptPairing());
+    this.view.onPairDismiss(() => this.dismissPairing());
     this.listenForStatusUpdates();
-    this.loadInitialStatus();
+    this.loadInitialView();
+  }
+
+  /** A pending pairing offer takes precedence over the normal status view. */
+  private loadInitialView(): void {
+    this.send<PairOfferResponse>({ type: "getPairOffer" }, (res) => {
+      if (!chrome.runtime.lastError && res?.offer) {
+        this.view.renderPairOffer(res.offer);
+        return;
+      }
+      this.loadInitialStatus();
+    });
   }
 
   private loadInitialStatus(): void {
@@ -104,6 +170,28 @@ class PopupController {
       }
       if (res?.connected) this.view.renderConnected(res.label);
       else this.view.renderDisconnected();
+    });
+  }
+
+  private acceptPairing(): void {
+    this.view.setPairAccepting();
+    this.send<ConnectAck>({ type: "acceptPairOffer" }, (res) => {
+      this.view.clearPairOffer();
+      if (chrome.runtime.lastError || !res?.ok) {
+        this.view.renderDisconnected(
+          res?.error ?? chrome.runtime.lastError?.message ?? "Connection failed",
+        );
+        return;
+      }
+      this.view.renderConnecting();
+      // The worker fires a statusUpdate which renders Connected.
+    });
+  }
+
+  private dismissPairing(): void {
+    this.send<ConnectAck>({ type: "dismissPairOffer" }, () => {
+      this.view.clearPairOffer();
+      this.loadInitialStatus();
     });
   }
 

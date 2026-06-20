@@ -99,9 +99,11 @@ Add it to your MCP client config (`claude_desktop_config.json` / `.mcp.json`):
 Once the MCP server is published to npm you can skip the local path and use
 `"command": "npx"`, `"args": ["-y", "cereon-browser-operator-mcp"]` instead.
 
-Then in the extension popup → **Configure…**: transport **WebSocket**, server URL
-`ws://localhost:8787`, token `dev-token`. **Save** → **Connect**. Now ask your AI
-client: _"open example.com and screenshot it."_ Full setup: **[mcp-server/](mcp-server/)**.
+Then connect the extension — **one click**: open `http://localhost:8787/pair`,
+click the toolbar icon, and press **Connect** (or set it manually in
+**Configure…**: WebSocket, `ws://localhost:8787`, token `dev-token`). Now ask your
+AI client: _"open example.com and screenshot it."_ Full setup:
+**[mcp-server/](mcp-server/)**.
 
 ---
 

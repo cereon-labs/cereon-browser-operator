@@ -103,6 +103,70 @@ token.
 
 ---
 
+## One-click pairing (optional)
+
+Instead of the user hand-typing the server URL + token in **Configure…**, a
+backend's own web page can hand the connection config to the extension and detect
+that it is installed — all over `window.postMessage`, with **no backend origin,
+token, or extension id compiled into the extension**. This is what makes a "one
+button, no typing" connect flow possible while keeping the extension fully
+vendor-neutral. Every message uses the marker key `__browserOperator`; its value
+is the message kind.
+
+The extension **never auto-applies** an offer — it parks the latest one, badges
+its toolbar icon, and the user confirms in the popup. So opening a page can at most
+surface a confirm prompt; it cannot silently reconfigure automation.
+
+### Presence: `ping` → `pong`
+
+A page detects the extension without knowing its id:
+
+```js
+// page → extension
+window.postMessage({ __browserOperator: "ping", nonce: "abc" }, window.origin);
+
+// extension → page (only if installed)
+// { __browserOperator: "pong", nonce: "abc", version: "2.1.0", productName: "…" }
+window.addEventListener("message", (e) => {
+  if (e.source === window && e.data?.__browserOperator === "pong") {
+    /* installed; e.data.productName / e.data.version */
+  }
+});
+```
+
+The pong carries **only** version + product name — never the connection state or
+any secret. "Connected?" is the backend's own server-side concern (e.g. whether
+the extension currently holds a stream to your relay).
+
+### Pairing offer: `pair-offer`
+
+A page offers a full connection config; the user approves it in the popup:
+
+```js
+window.postMessage(
+  {
+    __browserOperator: "pair-offer",
+    config: {
+      transport: "sse-http", // or "websocket"
+      serverUrl: "https://app.example", // your backend
+      token: "…", // a token YOUR backend issued
+      commandPath: "/browser/events", // optional (sse-http)
+      resultPath: "/browser/result", // optional (sse-http)
+      target: "channel-id", // optional opaque channel
+    },
+    brand: { name: "Example CRM" }, // optional label shown in the prompt
+  },
+  window.origin,
+);
+```
+
+Only top-frame, same-origin messages are accepted (cross-origin iframes are
+ignored). The bundled MCP server serves a ready-made pairing page at
+`http://localhost:<port>/pair`; a hosted product emits the same message from its
+own web app after minting a per-user token.
+
+---
+
 ## Tool catalog
 
 The standard tools (the `tool` field). Most operate on a `tabId` obtained from

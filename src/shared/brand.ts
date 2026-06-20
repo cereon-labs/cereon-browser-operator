@@ -30,5 +30,10 @@ export const brand = {
     disconnected: "Disconnected",
     configureLink: "Configure…",
     notConfigured: "Not configured — open Configure to set a server and token.",
+    /** Pairing-offer confirm prompt (one-click connect from a backend page). */
+    pairTitle: "Connection request",
+    pairBody: "wants to connect your browser",
+    pairAccept: "Connect",
+    pairDismiss: "Dismiss",
   },
 } as const;

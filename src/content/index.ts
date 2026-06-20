@@ -7,6 +7,7 @@
  */
 
 import { ContentMessageRouter } from "./message-router";
+import { registerPairBridge } from "./pair-bridge";
 
 declare global {
   interface Window {
@@ -17,4 +18,6 @@ declare global {
 if (!window.__browserOperatorLoaded) {
   window.__browserOperatorLoaded = true;
   new ContentMessageRouter().register();
+  // Listen for one-click pairing offers posted by a backend's web page.
+  registerPairBridge();
 }

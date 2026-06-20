@@ -78,7 +78,12 @@
 
       body {
         width: 320px;
-        font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family:
+          "DM Sans",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
         font-size: 13px;
         background: var(--bg);
         color: var(--text);
@@ -101,7 +106,11 @@
       }
 
       .header-title {
-        font-family: "Oxanium", "DM Sans", -apple-system, sans-serif;
+        font-family:
+          "Oxanium",
+          "DM Sans",
+          -apple-system,
+          sans-serif;
         font-size: 15px;
         font-weight: 600;
         letter-spacing: -0.01em;
@@ -213,6 +222,30 @@
         }
       }
 
+      .pair-title {
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text);
+      }
+
+      .pair-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      .pair-origin {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px;
+        color: var(--text);
+        word-break: break-all;
+        margin-top: 8px;
+        padding: 6px 8px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
       .footer {
         margin-top: 12px;
         font-size: 11px;
@@ -238,7 +271,7 @@
       <span class="header-title" id="headerTitle">Cereon Browser Operator</span>
     </div>
 
-    <div class="status-card">
+    <div class="status-card" id="statusCard">
       <div class="status-row">
         <div class="status-dot disconnected" id="statusDot"></div>
         <span class="status-label" id="statusLabel">Disconnected</span>
@@ -247,9 +280,26 @@
       <div class="error-msg" id="errorMsg" style="display: none"></div>
     </div>
 
+    <!-- One-click pairing request from a backend page (awaiting confirm). -->
+    <div
+      class="status-card"
+      id="pairCard"
+      style="display: none"
+      role="alertdialog"
+      aria-labelledby="pairTitle"
+    >
+      <div class="pair-title" id="pairTitle">Connection request</div>
+      <div class="pair-sub" id="pairSub"></div>
+      <div class="pair-origin" id="pairOrigin"></div>
+    </div>
+
     <button class="btn btn-primary" id="connectBtn">Connect</button>
     <button class="btn btn-outline" id="disconnectBtn" style="display: none; margin-top: 8px">
       Disconnect
+    </button>
+    <button class="btn btn-primary" id="pairAcceptBtn" style="display: none">Connect</button>
+    <button class="btn btn-outline" id="pairDismissBtn" style="display: none; margin-top: 8px">
+      Dismiss
     </button>
 
     <div class="footer">

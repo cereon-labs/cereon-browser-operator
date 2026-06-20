@@ -18,6 +18,7 @@
 //
 // IMPORTANT: stdout is the JSON-RPC channel — all logging goes to stderr.
 
+import http from "node:http";
 import { randomUUID } from "node:crypto";
 import { WebSocketServer } from "ws";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -36,8 +37,80 @@ let extension = null;
 /** commandId -> { resolve, timer } for in-flight commands. */
 const pending = new Map();
 
-const wss = new WebSocketServer({ port: WS_PORT });
-wss.on("listening", () => log(`waiting for the extension on ws://localhost:${WS_PORT}`));
+// One-click pairing page. Serving an HTML page on the same port lets the user
+// hand this server's token to the extension via the vendor-neutral pair-offer
+// protocol (window.postMessage) — no copy/paste. The extension still requires an
+// explicit in-popup confirm, so opening this page can't silently reconfigure it.
+function pairPageHtml() {
+  const offer = {
+    __browserOperator: "pair-offer",
+    config: { transport: "websocket", serverUrl: `ws://localhost:${WS_PORT}`, token: TOKEN },
+    brand: { name: "Browser Operator (local MCP server)" },
+  };
+  // JSON-encode for the inline script, escaping `<` so a token can never break out.
+  const json = JSON.stringify(offer).replace(/</g, "\\u003c");
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connect Browser Operator</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body { font: 15px/1.6 system-ui, sans-serif; max-width: 30rem; margin: 12vh auto; padding: 0 1.25rem; }
+      h1 { font-size: 1.3rem; margin: 0 0 .5rem; }
+      p { color: #555; } @media (prefers-color-scheme: dark) { p { color: #aaa; } }
+      .ok { color: #16a34a; font-weight: 600; }
+      ol { padding-left: 1.1rem; } li { margin: .35rem 0; }
+      button { font: inherit; padding: .5rem .9rem; border-radius: .5rem; border: 1px solid #8884; cursor: pointer; background: transparent; color: inherit; }
+    </style>
+  </head>
+  <body>
+    <h1>Connect Browser Operator</h1>
+    <p id="status">Offering a connection to the Browser Operator extension…</p>
+    <ol>
+      <li><strong>1.</strong> <span id="sent">Sending…</span></li>
+      <li><strong>2.</strong> Click the <strong>Browser Operator</strong> icon in your browser toolbar, then press <strong>Connect</strong>.</li>
+    </ol>
+    <button id="resend" type="button">Re-send offer</button>
+    <script>
+      const offer = ${json};
+      function send() {
+        window.postMessage(offer, window.origin);
+        document.getElementById("sent").innerHTML = '<span class="ok">Sent \\u2713</span> \\u2014 approve it in the extension popup.';
+      }
+      document.getElementById("resend").addEventListener("click", send);
+      // If the extension is installed, its content script answers a ping.
+      window.addEventListener("message", (e) => {
+        if (e.source === window && e.data && e.data.__browserOperator === "pong") {
+          document.getElementById("status").textContent =
+            "Extension detected (" + (e.data.productName || "Browser Operator") + "). Offer sent below.";
+        }
+      });
+      window.postMessage({ __browserOperator: "ping", nonce: "pairpage" }, window.origin);
+      send();
+    </script>
+  </body>
+</html>`;
+}
+
+const httpServer = http.createServer((req, res) => {
+  const path = (req.url ?? "").split("?")[0];
+  if (req.method === "GET" && path === "/pair") {
+    res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });
+    res.end(pairPageHtml());
+    return;
+  }
+  res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
+  res.end("Not found");
+});
+
+const wss = new WebSocketServer({ server: httpServer });
+httpServer.listen(WS_PORT, () =>
+  log(
+    `waiting for the extension on ws://localhost:${WS_PORT} — one-click pair: http://localhost:${WS_PORT}/pair`,
+  ),
+);
 wss.on("connection", (ws) => {
   let authed = false;
   ws.on("message", (raw) => {
