@@ -78,9 +78,7 @@ if (hasZipCli()) {
       stdio: "inherit",
     }).status === 0;
 } else {
-  console.error(
-    "✗ No `zip` CLI found. Install it (e.g. `apt install zip` / `brew install zip`).",
-  );
+  console.error("✗ No `zip` CLI found. Install it (e.g. `apt install zip` / `brew install zip`).");
   process.exit(1);
 }
 
