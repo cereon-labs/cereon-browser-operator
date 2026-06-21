@@ -17,8 +17,24 @@ export const BACKOFF = {
   factor: 2,
 } as const;
 
-/** How often the watchdog alarm checks that the SSE loop is still alive. */
-export const SSE_WATCHDOG_PERIOD_MINUTES = 1;
+/**
+ * How often the watchdog alarm checks that the SSE loop is still alive and
+ * restarts it if the service worker was revived after Chrome idled it. Kept at
+ * the 30 s floor (`chrome.alarms` clamps to a 0.5 min minimum on Chrome ≥120;
+ * older builds clamp to 1 min — harmless) so a dropped connection recovers in
+ * seconds rather than up to a minute. The primary keep-alive is the sub-30 s
+ * stream heartbeat + `KEEPALIVE_PING_INTERVAL_MS`; this alarm is the backstop.
+ */
+export const SSE_WATCHDOG_PERIOD_MINUTES = 0.5;
+
+/**
+ * While a connection is desired, ping a trivial `chrome.*` API on this cadence
+ * to reset the MV3 service-worker idle timer (~30 s). Belt-and-suspenders on top
+ * of the server's stream heartbeat: if inbound stream traffic ever stalls, this
+ * still keeps the worker (and therefore the live connection + presence) alive.
+ * Must stay under ~30 s.
+ */
+export const KEEPALIVE_PING_INTERVAL_MS = 25_000;
 
 /** Bounded-buffer caps for captured telemetry. */
 export const LIMITS = {

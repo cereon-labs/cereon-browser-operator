@@ -9,7 +9,7 @@
 
 import type { ConnectionConfig } from "../config/connection-config";
 import { ConfigStore } from "../config/config-store";
-import { SSE_WATCHDOG_PERIOD_MINUTES } from "../shared/constants";
+import { KEEPALIVE_PING_INTERVAL_MS, SSE_WATCHDOG_PERIOD_MINUTES } from "../shared/constants";
 import { toMessage } from "../shared/errors";
 import { logger } from "../shared/logger";
 import type {
@@ -67,8 +67,36 @@ async function rebuild(config: ConnectionConfig): Promise<void> {
   activeAuth = buildAuth(config);
   activeTransport = buildTransport(config, activeAuth, {
     onCommand: (command) => void dispatcher.handle(command),
-    onStatus: (status) => notifier.update({ ...status, label: connectionLabel() }),
+    onStatus: (status) => {
+      // Run the MV3 keep-alive only while connected so the worker can idle out
+      // (and be revived by the watchdog) once we're disconnected.
+      if (status.connected) startKeepAlive();
+      else stopKeepAlive();
+      notifier.update({ ...status, label: connectionLabel() });
+    },
   });
+}
+
+// ─── MV3 keep-alive ──────────────────────────────────────────────────────────
+// A long-lived `fetch` stream alone does NOT keep an MV3 service worker alive —
+// Chrome idle-terminates it after ~30 s without activity. While a connection is
+// up we ping a trivial `chrome.*` API on a sub-30 s cadence to reset that timer,
+// so the worker (and the live SSE stream + server-side presence) survive between
+// stream heartbeats. If the worker dies anyway, `registerWatchdog()` revives it
+// and the reconnect's onStatus(connected) restarts this loop.
+let keepAliveTimer: ReturnType<typeof setInterval> | null = null;
+
+function startKeepAlive(): void {
+  if (keepAliveTimer !== null) return;
+  keepAliveTimer = setInterval(() => {
+    void chrome.runtime.getPlatformInfo().catch(() => {});
+  }, KEEPALIVE_PING_INTERVAL_MS);
+}
+
+function stopKeepAlive(): void {
+  if (keepAliveTimer === null) return;
+  clearInterval(keepAliveTimer);
+  keepAliveTimer = null;
 }
 
 cdp.registerListeners();
